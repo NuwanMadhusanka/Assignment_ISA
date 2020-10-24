@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+service EmployeeService {
+  rpc getEmployeeData(EmployeeRequest) returns (EmployeeResponse) {}
+}
+
+message EmployeeRequest {
+  string email = 1;
+}
+
+message EmployeeResponse {
+  int32 employee_id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  string department = 4;
+  string team = 5;
+  string join_date = 6;
+  string mobile = 7;
+}
