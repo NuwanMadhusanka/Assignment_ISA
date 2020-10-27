@@ -1,18 +1,28 @@
 package com.isa.grpc.service;
 
+import com.isa.grpc.entity.Employee;
+import com.isa.grpc.repository.EmployeeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.MessagingException;
 import org.springframework.stereotype.Service;
 
+import javax.mail.Address;
 import javax.mail.BodyPart;
 import javax.mail.Multipart;
+import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @Service
 public class MailReceiverService {
+
+    @Autowired
+    EmployeeRepository employeeRepository;
 
     @Bean
     @ServiceActivator(inputChannel = "pop3Channel")
@@ -21,51 +31,87 @@ public class MailReceiverService {
 
             @Override
             public void handleMessage(org.springframework.messaging.Message<?> message) throws MessagingException {
-                System.out.println("New email:" + message.getHeaders().toString());
-                System.out.println(message.getPayload());
-
 
                 Object payload = message.getPayload();
                 MimeMessage msg = (MimeMessage) payload;
-                try {
-                    //System.out.println(msg.getFolder().getMessage(0));
-                    MimeMessage msg1 = (MimeMessage) payload;
-                    System.out.println(String.format("Headers [%s] Subject [%s]. Content-Type [%s].", msg.getAllHeaders(),
-                            msg1.getSubject(), msg1.getContentType()));
 
-                    System.out.println("----------");
-                    handleMessage1(msg1);
-                } catch (javax.mail.MessagingException | IOException e) {
+                try {
+                    handleText(msg);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (javax.mail.MessagingException e) {
                     e.printStackTrace();
                 }
-
-
-                //Processing emails do with them something..
-//                for (EmailAction emailAction : services) {
-//                    emailAction.performAction(null);
-//                }
-
             }
         };
         return messageHandler;
     }
 
-    private void handleMessage1(MimeMessage msg) throws MessagingException, IOException, javax.mail.MessagingException {
+    private void handleText(MimeMessage msg) throws MessagingException, IOException, javax.mail.MessagingException {
 
-//        if (msg.getContentType().contains(MediaType.TEXT_PLAIN_VALUE)) {
-//            System.out.println((String) msg.getContent());
-//        }
 
         Multipart mime = (Multipart) msg.getContent();
-
         String content="";
-        for (int i = 0; i < mime.getCount(); i++)
-        {
-            BodyPart part = mime.getBodyPart(i);
-            content += part.getContent().toString();
-        }
-        System.out.println(content);
+
+        for (int i = 0; i < mime.getCount() ; i++) {
+
+                BodyPart part = mime.getBodyPart(i);
+                content = part.getContent().toString().trim();
+                String[] employeeData = content.split(" ");
+
+                if(employeeData.length == 7){
+
+                    String firstName = employeeData[0].trim();
+                    String lastName = employeeData[1].trim();
+                    String department = employeeData[2].trim();
+                    String team = employeeData[3].trim();
+
+                    //Get Employee's ID
+                    Integer employeeId = 0;
+                    try {
+                        employeeId =  Integer.parseInt(employeeData[4].trim());
+                    } catch (NumberFormatException e) {
+                        System.out.println("Employee's id should be number");
+                        break;
+                    }
+
+                    //Get Employee join data
+                    LocalDate joinDate = LocalDate.of(2020, 1, 8);
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/d");
+                    try {
+                        joinDate = LocalDate.parse(employeeData[5].trim(), formatter);
+                    }catch (Exception  e){
+                        System.out.println("Unable to convert String to Date");
+                        break;
+                    }
+
+                    //Get Employee Mobile Number
+                    String mobile = employeeData[6].trim();
+                    if(mobile.length()!=10 || !mobile.matches("[0-9]+")){
+                        break;
+                    }
+
+                    //Get Employee Email
+                    Address[] froms = msg.getFrom();
+                    String email = froms == null ? null : ((InternetAddress) froms[0]).getAddress();
+
+                    //Save Employee data to db
+                    Employee employee = new Employee();
+                    employee.setEmployeeId(employeeId);
+                    employee.setFirstName(firstName);
+                    employee.setLastName(lastName);
+                    employee.setDepartment(department);
+                    employee.setTeam(team);
+                    employee.setMobile(mobile);
+                    employee.setJoinDate(joinDate);
+                    employee.setEmail(email);
+
+                    System.out.println(employee);
+                    employeeRepository.save(employee);
+
+                    break;
+                }
+            }
 
     }
-
 }

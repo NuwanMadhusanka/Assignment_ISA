@@ -1,5 +1,6 @@
 package com.isa.grpc.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.validation.constraints.*;
@@ -29,9 +30,11 @@ public class Employee {
 
     @NotBlank(message = "Mobile number may not be blank")
     @Size(min = 10, max = 10, message = "Mobile number should be 10 digits")
+    @Column(unique = true)
     private String mobile;
 
     @Email(message = "Email should be valid")
+    @Column(unique = true)
     private String email;
 
     public Employee() {
