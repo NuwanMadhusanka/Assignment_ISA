@@ -21,21 +21,6 @@ public class MailReceiverConfiguration {
         return new DefaultMailHeaderMapper();
     }
 
-//    @Bean
-//    public IntegrationFlow imapMailFlow() {
-//        IntegrationFlow flow =  IntegrationFlows //imaps://some_google_address:${password}@imap.gmail.com/INBOX
-//                .from(Mail.imapInboundAdapter("imap://drivolearners@gmail.com:ucsc123!@imap.gmail.com/INBOX")
-//                                .userFlag("testSIUserFlag")
-//                                .javaMailProperties(p -> {
-//                                    p.put("mail.debug", "false");
-//                                }),
-//                        e -> e.autoStartup(true)
-//                                .poller(p -> p.fixedDelay(5000)))
-//                .transform(Mail.toStringTransformer())
-//                .channel(MessageChannels.queue("imapChannel"))
-//                .get();
-//        return flow;
-//    }
 
     @Bean
     public IntegrationFlow pop3MailFlow() {

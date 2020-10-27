@@ -18,8 +18,8 @@ dependencies {
 	implementation 'net.devh:grpc-server-spring-boot-starter:2.10.1.RELEASE'
 
 	implementation 'org.hibernate.validator:hibernate-validator:6.1.2.Final'
-	compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.15'
-	//compile group: 'org.postgresql', name: 'postgresql', version: '42.2.18'
+	//compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.15'
+	compile group: 'org.postgresql', name: 'postgresql', version: '42.2.18'
 
 	compile "org.springframework.integration:spring-integration-mail:5.3.2.RELEASE"
 	compile group: 'javax.mail', name: 'mail', version: '1.4.1'
