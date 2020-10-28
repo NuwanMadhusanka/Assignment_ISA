@@ -27,8 +27,15 @@ dependencies {
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
+	testCompile group: 'org.testng', name: 'testng', version: '7.1.0'
+
+	// https://mvnrepository.com/artifact/com.h2database/h2
+	testCompile group: 'com.h2database', name: 'h2', version: '1.4.189'
+
 }
 
 test {
-	useJUnitPlatform()
+	useTestNG(){
+		suites 'src/test/resources/testng.xml'
+	}
 }

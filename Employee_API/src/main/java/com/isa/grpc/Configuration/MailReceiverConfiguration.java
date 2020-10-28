@@ -30,7 +30,7 @@ public class MailReceiverConfiguration {
                                 .simpleContent(true)
                                 .javaMailProperties(p -> p.put("mail.debug", "false")),
                         e -> e.autoStartup(true)
-                                .poller(p -> p.fixedDelay(1000)))
+                                .poller(p -> p.fixedDelay(60000)))//1 Min
                 .channel(MessageChannels.queue("pop3Channel"))
                 .get();
     }
@@ -39,7 +39,7 @@ public class MailReceiverConfiguration {
     public PollerMetadata defaultPoller() {
 
         PollerMetadata pollerMetadata = new PollerMetadata();
-        pollerMetadata.setTrigger(new PeriodicTrigger(1000));
+        pollerMetadata.setTrigger(new PeriodicTrigger(60000));
         return pollerMetadata;
     }
 }

@@ -10,25 +10,27 @@ import java.time.LocalDate;
 public class Employee {
 
     @Id
-    @Positive(message = "Employee's id may not be negative")
+    @NotNull(message = "EmployeeId must not be null")
+    @Positive(message = "Employee's id must not be negative")
     private Integer employeeId;
 
-    @NotBlank(message = "FirstName may not be blank")
+    @NotBlank(message = "FirstName must not be blank")
     private String firstName;
 
-    @NotBlank(message = "LastName may not be blank")
+    @NotBlank(message = "LastName must not be blank")
     private String lastName;
 
-    @NotBlank(message = "Department name may not be blank")
+    @NotBlank(message = "Department name must not be blank")
     private String department;
 
-    @NotBlank(message = "Team name may not be blank")
+    @NotBlank(message = "Team name must not be blank")
     private String team;
 
-    @PastOrPresent(message = "Join date may not be future date")
+    @NotNull(message = "Join date must not be null")
+    @PastOrPresent(message = "Join date must not be future date")
     private LocalDate joinDate;
 
-    @NotBlank(message = "Mobile number may not be blank")
+
     @Size(min = 10, max = 10, message = "Mobile number should be 10 digits")
     @Column(unique = true)
     private String mobile;
@@ -40,7 +42,7 @@ public class Employee {
     public Employee() {
     }
 
-    public Employee(@Positive(message = "Employee's id may not be negative") Integer employeeId, @NotBlank(message = "FirstName may not be blank") String firstName, @NotBlank(message = "LastName may not be blank") String lastName, @NotBlank(message = "Department name may not be blank") String department, @NotBlank(message = "Team name may not be blank") String team, @PastOrPresent(message = "Join date may not be future date") LocalDate joinDate, @NotBlank(message = "Mobile number may not be blank") @Size(min = 10, max = 10, message = "Mobile number should be 10 digits") String mobile, @Email(message = "Email should be valid") String email) {
+    public Employee(@NotNull(message = "EmployeeId must not be null") @Positive(message = "Employee's id must not be negative") Integer employeeId, @NotBlank String firstName, @NotBlank(message = "LastName must not be blank") String lastName, @NotBlank(message = "Department name must not be blank") String department, @NotBlank(message = "Team name must not be blank") String team, @NotNull(message = "Join date must not be null") @PastOrPresent(message = "Join date must not be future date") LocalDate joinDate, @Size(min = 10, max = 10, message = "Mobile number should be 10 digits") String mobile, @Email(message = "Email should be valid") String email) {
         this.employeeId = employeeId;
         this.firstName = firstName;
         this.lastName = lastName;
