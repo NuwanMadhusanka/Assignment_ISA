@@ -36,7 +36,7 @@ public class MailReceiverService {
                 MimeMessage msg = (MimeMessage) payload;
 
                 try {
-                    handleText(msg);
+                    handleMsgContent(msg);
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (javax.mail.MessagingException e) {
@@ -47,11 +47,12 @@ public class MailReceiverService {
         return messageHandler;
     }
 
-    private void handleText(MimeMessage msg) throws MessagingException, IOException, javax.mail.MessagingException {
+    public String handleMsgContent(MimeMessage msg) throws MessagingException, IOException, javax.mail.MessagingException {
 
 
         Multipart mime = (Multipart) msg.getContent();
         String content = "";
+
 
         for (int i = 0; i < mime.getCount(); i++) {
 
@@ -65,11 +66,11 @@ public class MailReceiverService {
                 Address[] from = msg.getFrom();
                 String email = from == null ? null : ((InternetAddress) from[0]).getAddress();
 
-                employeeSave(employeeData, email);
-                break;
+                String result = employeeSave(employeeData, email);
+                return result;
             }
         }
-
+        return "notSuccess";
     }
 
     public String employeeSave(String[] employeeData, String email) {
@@ -105,9 +106,17 @@ public class MailReceiverService {
                     employee.setEmail(email);
 
                     System.out.println(employee);
-                    employeeRepository.save(employee);
 
-                    return "success";
+                    try {
+                        Employee employeeDB = employeeRepository.findByEmployeeId(employeeId);
+                        if(employeeDB!=null){
+                            return "notSucess";
+                        }
+                        employeeRepository.save(employee);
+                        return "success";
+                    }catch (Exception e){
+                        System.out.println("Unable to save employee's data");
+                    }
                 }
 
             } catch (Exception e) {

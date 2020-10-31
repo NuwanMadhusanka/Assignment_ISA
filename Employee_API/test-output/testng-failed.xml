@@ -3,22 +3,17 @@
 <suite guice-stage="DEVELOPMENT" name="Failed suite [All Test Suite]">
   <test thread-count="5" name="D:/UCSC/Third year/Internship/Projects/Assignment_ISA/Employee_API(failed)">
     <classes>
-      <class name="com.isa.grpc.service.EmployeeServiceTest">
+      <class name="com.isa.grpc.repository.EmployeeRepositoryTest">
         <methods>
           <include name="springTestContextBeforeTestClass"/>
-          <include name="testEmployeeSaveMethod" invocation-numbers="0 1 2 3 4 5 7 8 9 10"/>
+          <include name="testUniqueMobile"/>
+          <include name="testUniqueEmail"/>
           <include name="springTestContextPrepareTestInstance"/>
           <include name="springTestContextAfterTestClass"/>
           <include name="springTestContextBeforeTestMethod"/>
           <include name="springTestContextAfterTestMethod"/>
         </methods>
-      </class> <!-- com.isa.grpc.service.EmployeeServiceTest -->
-      <class name="com.isa.grpc.entity.EmployeeTest">
-        <methods>
-          <include name="setup"/>
-          <include name="employeeValidationTest" invocation-numbers="0 1 2 3 4 5"/>
-        </methods>
-      </class> <!-- com.isa.grpc.entity.EmployeeTest -->
+      </class> <!-- com.isa.grpc.repository.EmployeeRepositoryTest -->
     </classes>
   </test> <!-- D:/UCSC/Third year/Internship/Projects/Assignment_ISA/Employee_API(failed) -->
 </suite> <!-- Failed suite [All Test Suite] -->
