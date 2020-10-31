@@ -3,6 +3,12 @@
 <suite guice-stage="DEVELOPMENT" name="Failed suite [All Test Suite]">
   <test thread-count="5" name="D:/UCSC/Third year/Internship/Projects/Assignment_ISA/Employee_API(failed)">
     <classes>
+      <class name="com.isa.grpc.entity.EmployeeTest">
+        <methods>
+          <include name="setup"/>
+          <include name="employeeValidationTest" invocation-numbers="0 1 2 3 4 5"/>
+        </methods>
+      </class> <!-- com.isa.grpc.entity.EmployeeTest -->
       <class name="com.isa.grpc.repository.EmployeeRepositoryTest">
         <methods>
           <include name="springTestContextBeforeTestClass"/>

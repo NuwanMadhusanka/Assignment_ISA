@@ -73,60 +73,68 @@ public class MailReceiverService {
         return "notSuccess";
     }
 
-    public String employeeSave(String[] employeeData, String email) {
+    public String employeeSave(String[] employeeData, String employeeEmail) {
 
         String firstName = employeeData[0].trim();
         String lastName = employeeData[1].trim();
         String department = employeeData[2].trim();
         String team = employeeData[3].trim();
+        String email = employeeEmail.trim();
 
-        //Get Employee's ID
-        Integer employeeId = 0;
-        try {
-            employeeId = Integer.parseInt(employeeData[4].trim());
 
-            //Get Employee join data
-            LocalDate joinDate = LocalDate.of(2020, 1, 8);
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/d");
+        if (!firstName.isEmpty() && !lastName.isEmpty() && !department.isEmpty() && !team.isEmpty() && !email.isEmpty()) {
+            //Get Employee's ID
+            Integer employeeId = 0;
             try {
-                joinDate = LocalDate.parse(employeeData[5].trim(), formatter);
+                employeeId = Integer.parseInt(employeeData[4].trim());
 
-                //Get Employee Mobile Number
-                String mobile = employeeData[6].trim();
-                if (mobile.length() == 10 && mobile.matches("[0-9]+")) {
-                    //Save Employee data to db
-                    Employee employee = new Employee();
-                    employee.setEmployeeId(employeeId);
-                    employee.setFirstName(firstName);
-                    employee.setLastName(lastName);
-                    employee.setDepartment(department);
-                    employee.setTeam(team);
-                    employee.setMobile(mobile);
-                    employee.setJoinDate(joinDate);
-                    employee.setEmail(email);
+                //Get Employee join data
+                LocalDate joinDate = LocalDate.of(2020, 1, 8);
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/d");
+                try {
+                    joinDate = LocalDate.parse(employeeData[5].trim(), formatter);
 
-                    System.out.println(employee);
+                    //Get Employee Mobile Number
+                    String mobile = employeeData[6].trim();
+                    if (mobile.length() == 10 && mobile.matches("[0-9]+")) {
+                        //Save Employee data to db
+                        Employee employee = new Employee();
+                        employee.setEmployeeId(employeeId);
+                        employee.setFirstName(firstName);
+                        employee.setLastName(lastName);
+                        employee.setDepartment(department);
+                        employee.setTeam(team);
+                        employee.setMobile(mobile);
+                        employee.setJoinDate(joinDate);
+                        employee.setEmail(email);
 
-                    try {
-                        Employee employeeDB = employeeRepository.findByEmployeeId(employeeId);
-                        if(employeeDB!=null){
-                            return "notSucess";
+                        System.out.println(employee);
+
+                        try {
+                            Employee employeeDB = employeeRepository.findByEmployeeId(employeeId);
+                            if (employeeDB != null) {
+                                return "notSuccess";
+                            }
+
+                            Employee e = employeeRepository.save(employee);
+                            return "success";
+                        } catch (Exception e) {
+                            System.out.println("Unable to save employee's data");
                         }
-                        employeeRepository.save(employee);
-                        return "success";
-                    }catch (Exception e){
-                        System.out.println("Unable to save employee's data");
+                    } else {
+                        System.out.println("Invalid mobile number");
                     }
+
+                } catch (Exception e) {
+                    System.out.println("Unable to convert String to Date");
                 }
 
-            } catch (Exception e) {
-                System.out.println("Unable to convert String to Date");
+            } catch (NumberFormatException e) {
+                System.out.println("Employee's id should be number");
             }
-
-        } catch (NumberFormatException e) {
-            System.out.println("Employee's id should be number");
+        }else{
+            System.out.println("Empty string of FirstName/LastName/Dev/Team/Email");
         }
-
         return "notSuccess";
     }
 
