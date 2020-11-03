@@ -3,6 +3,7 @@ package com.isa.grpc.repository;
 import com.isa.grpc.entity.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -55,7 +56,7 @@ public class EmployeeRepositoryTest extends org.springframework.test.context.tes
 
     }
 
-    @Test
+    @Test(expectedExceptions = {DataIntegrityViolationException.class})
     void testUniqueEmail(){
         Employee employee1 = new Employee(1,"Nuwan","Madhusanka","Dev","aeroMART", LocalDate.of(2020, 1, 8),"0773015590","nuwan@gmail.com");
         employeeRepository.save(employee1);
@@ -64,7 +65,7 @@ public class EmployeeRepositoryTest extends org.springframework.test.context.tes
         employeeRepository.save(employee2);
     }
 
-    @Test
+    @Test(expectedExceptions = {DataIntegrityViolationException.class})
     void testUniqueMobile(){
         Employee employee1 = new Employee(1,"Nuwan","Madhusanka","Dev","aeroMART", LocalDate.of(2020, 1, 8),"0773015590","nuwan1@gmail.com");
         employeeRepository.save(employee1);

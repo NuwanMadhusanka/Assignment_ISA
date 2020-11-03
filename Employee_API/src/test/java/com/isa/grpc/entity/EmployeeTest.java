@@ -22,8 +22,28 @@ public class EmployeeTest {
         validator = factory.getValidator();
     }
 
-    @Test(dataProvider = "EmployeeDataProvider")
-    void employeeValidationTest(Integer empId, String firstName, String lastName, String department, String team, LocalDate joinDate, String mobile, String email){
+    @Test(dataProvider = "EmployeeDataProvider1")
+    void employeeValidationTestNotSuccess(Integer empId, String firstName, String lastName, String department, String team, LocalDate joinDate, String mobile, String email){
+
+        Employee employee = new Employee();
+        employee.setEmployeeId(empId);
+        employee.setFirstName(firstName);
+        employee.setLastName(lastName);
+        employee.setDepartment(department);
+        employee.setTeam(team);
+        employee.setJoinDate(joinDate);
+        employee.setMobile(mobile);
+        employee.setEmail(email);
+
+        Set<ConstraintViolation<Employee>> violations = validator.validate(employee);
+        for (ConstraintViolation e: violations) {
+            System.out.print(e.getMessage()+ " ,");
+        }
+        Assert.assertFalse(violations.isEmpty(),"Constrain violation not happen in Employee object");
+    }
+
+    @Test(dataProvider = "EmployeeDataProvider2")
+    void employeeValidationTestSuccess(Integer empId, String firstName, String lastName, String department, String team, LocalDate joinDate, String mobile, String email){
 
         Employee employee = new Employee();
         employee.setEmployeeId(empId);
@@ -42,8 +62,8 @@ public class EmployeeTest {
         Assert.assertTrue(violations.isEmpty(),"Constrain violation happen in Employee object");
     }
 
-    @DataProvider(name = "EmployeeDataProvider")
-    public Object[][] getData(){
+    @DataProvider(name = "EmployeeDataProvider1")
+    public Object[][] getData1(){
         Object[][] data = {
                 {null,""," "," "," ",null," "," "},
                 {-1,"Nuwan","Madhusanka","Dev","aeroMART",LocalDate.of(2020, 1, 8),"0773015590","nuwan@gmail.com"},//Invalid empId
@@ -51,6 +71,13 @@ public class EmployeeTest {
                 {1,"Nuwan","Madhusanka","Dev","aeroMART",LocalDate.of(2020, 1, 8),"077301590","nuwan@gmail.com"},//Invalid Mobile
                 {1,"Nuwan","Madhusanka","Dev","aeroMART",LocalDate.of(2020, 1, 8),"0773015590","nuwangmail.com"},//Invalid Email
                 {1,"Nuwan","Madhusanka","Dev","aeroMART",LocalDate.of(2020, 1, 8),"0773015590"," "},//Blank email
+        };
+        return data;
+    }
+
+    @DataProvider(name = "EmployeeDataProvider2")
+    public Object[][] getData2(){
+        Object[][] data = {
                 {1,"Nuwan","Madhusanka","Dev","aeroMART",LocalDate.of(2020, 1, 8),"0773015590","nuwan@gmail.com"}//all valid
         };
         return data;
