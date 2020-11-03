@@ -30,7 +30,7 @@ public class MailReceiverConfiguration {
                                 .simpleContent(true)
                                 .javaMailProperties(p -> p.put("mail.debug", "false")),
                         e -> e.autoStartup(true)
-                                .poller(p -> p.fixedDelay(1000)))//1 Min
+                                .poller(p -> p.fixedDelay(1000)))//4 Sec
                 .channel(MessageChannels.queue("pop3Channel"))
                 .get();
     }

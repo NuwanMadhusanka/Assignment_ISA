@@ -9,9 +9,9 @@
 <!--        </groups>-->
         
         <packages>
-<!--            <package name="com.isa.grpc.entity"></package>-->
-<!--            <package name="com.isa.grpc.repository"></package>-->
-<!--            <package name="com.isa.grpc.service"></package>-->
+            <package name="com.isa.grpc.entity"></package>
+            <package name="com.isa.grpc.repository"></package>
+            <package name="com.isa.grpc.service"></package>
         </packages>
 
 <!--        <classes>-->

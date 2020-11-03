@@ -49,7 +49,6 @@ public class MailReceiverService {
 
     public String handleMsgContent(MimeMessage msg) throws MessagingException, IOException, javax.mail.MessagingException {
 
-
         Multipart mime = (Multipart) msg.getContent();
         String content = "";
 

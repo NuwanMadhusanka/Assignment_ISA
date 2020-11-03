@@ -7,6 +7,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.integration.support.MessageBuilder;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -38,12 +39,39 @@ public class MailReceiverServiceTest extends org.springframework.test.context.te
     private EmployeeRepository employeeRepository;
 
 
+     @Test
+     void testHandleMessage() throws MessagingException, IOException {
+         Properties mailProps = new Properties();
+         Session session = Session.getDefaultInstance(mailProps, null);
+         MimeMessage msg = new MimeMessage(session);
+         msg.addHeader("Content-Type", "multipart");
+         msg.setFrom(new InternetAddress("nuwan@gmail.com"));
+         msg.setSubject("Test");
+         msg.setSentDate(new Date());
+         msg.setRecipient(Message.RecipientType.TO, new InternetAddress("drivolearners@gmail.com"));
+
+         MimeBodyPart bodyPart1 = new MimeBodyPart();
+         bodyPart1.setHeader("Content-Type", "text/html; charset=utf-8");
+         bodyPart1.setContent("", "text/html");
+         Multipart multiPart = new MimeMultipart();
+         multiPart.addBodyPart(bodyPart1, 0);
+         msg.setContent(multiPart, "multipart");
+         msg.saveChanges();
+
+         org.springframework.messaging.Message message1 = (org.springframework.messaging.Message) MessageBuilder.withPayload(msg)
+                 .setHeader("", "")
+                 .build();
+
+         MailReceiverService mailReceiverService1 = Mockito.spy(mailReceiverService);
+         Mockito.doReturn("success").when(mailReceiverService1).handleMsgContent(any());
+         mailReceiverService1.processNewEmail().handleMessage(message1);
+         //Mockito.verify(mailReceiverService1,Mockito.times(1)).handleMsgContent(any());
+         Assert.assertTrue(true);
+     }
 
     @Test(dataProvider = "EmailDataProvider1")
     void testHandleTextNotSuccess(String emailContent) throws MessagingException, IOException {
         Properties mailProps = new Properties();
-        mailProps.setProperty("mail.smtp.host", "localhost");
-        mailProps.setProperty("mail.smtp.port", "25");
         Session session = Session.getDefaultInstance(mailProps, null);
         MimeMessage msg = new MimeMessage(session);
         msg.addHeader("Content-Type", "multipart");
@@ -64,15 +92,13 @@ public class MailReceiverServiceTest extends org.springframework.test.context.te
         Mockito.doReturn("notSuccess").when(mailReceiverService1).employeeSave(any(),any());
 
 
-        String result = mailReceiverService.handleMsgContent(msg);
+        String result = mailReceiverService1.handleMsgContent(msg);
         Assert.assertEquals(result,"notSuccess");
     }
 
     @Test(dataProvider = "EmailDataProvider2")
     void testHandleTextSuccess(String emailContent) throws MessagingException, IOException {
         Properties mailProps = new Properties();
-        mailProps.setProperty("mail.smtp.host", "localhost");
-        mailProps.setProperty("mail.smtp.port", "25");
         Session session = Session.getDefaultInstance(mailProps, null);
         MimeMessage msg = new MimeMessage(session);
         msg.addHeader("Content-Type", "multipart");
@@ -93,7 +119,7 @@ public class MailReceiverServiceTest extends org.springframework.test.context.te
         Mockito.doReturn("success").when(mailReceiverService1).employeeSave(any(),any());
 
 
-        String result = mailReceiverService.handleMsgContent(msg);
+        String result = mailReceiverService1.handleMsgContent(msg);
         Assert.assertEquals(result,"success");
     }
 
